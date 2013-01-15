@@ -3,21 +3,21 @@ require(testthat)
 
 ######################## DEFINE VARIABLES TO BE TESTED #######
 
-source('bee.r')
+source('bumblebee.r')
 
-qty    = book$yellowPort$spx[,'Order.Qty']
-price  = book$yellowPort$spx[,'Order.Price']
-type   = book$yellowPort$spx[,'Order.Type']
-side   = book$yellowPort$spx[,'Order.Side']
-status = book$yellowPort$spx[,'Order.Status']
-fees   = book$yellowPort$spx[,'Txn.Fees']
-rule   = book$yellowPort$spx[,'Rule']
+qty    = book$bumblebeePort$spx[,'Order.Qty']
+price  = book$bumblebeePort$spx[,'Order.Price']
+type   = book$bumblebeePort$spx[,'Order.Type']
+side   = book$bumblebeePort$spx[,'Order.Side']
+status = book$bumblebeePort$spx[,'Order.Status']
+fees   = book$bumblebeePort$spx[,'Txn.Fees']
+rule   = book$bumblebeePort$spx[,'Rule']
 
 
 
 ######################## ORDER BOOK ######################
 
-context("Yellow order Book is consistent ")
+context("Bumblebee order Book is consistent ")
 
 ## quantity
 test_that("The first entry is 100", 
@@ -52,7 +52,7 @@ test_that("The second transaction is an exit long",
 
 ######################## STATS  ######################
 
-context("Yellow trade statistics are consistent ")
+context("Bumblebee trade statistics are consistent ")
 
 test_that("Num.Txns is 19", 
           { expect_that(stats$Num.Txns , equals(19)) })

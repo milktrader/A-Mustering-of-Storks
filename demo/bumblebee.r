@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript --vanilla
 #
-# Bumblebee trading system
+# Bumblebumblebee trading system
 # copyright (c) 2009-2013, Algorithm Alpha, LLC
 # Licensed GPL-2
 
@@ -14,8 +14,8 @@ data(spx)
 
 ############################# DEFINE VARIABLES ##############################
 
-port          = 'bug'
-acct          = 'colony'
+port          = 'bumblebeePort'
+acct          = 'bumblebeeAcct'
 initEq        = 100000
 initDate      = '1969-12-31'
 fast          = 10
@@ -29,7 +29,7 @@ stock('spx',currency='USD', multiplier=1)
 initPortf(port, 'spx', initDate=initDate)
 initAcct(acct, port, initEq=initEq, initDate=initDate)
 initOrders(port, initDate=initDate )
-bee = strategy(port)
+bumblebumblebee = strategy(port)
 
 ############################# MAX POSITION LOGIC ############################
 
@@ -42,15 +42,15 @@ addPosLimit(
 
 ############################# INDICATORS ####################################
 
-bee <- add.indicator( 
-                     strategy  = bee, 
+bumblebee <- add.indicator( 
+                     strategy  = bumblebee, 
                      name      = 'BBands', 
                      arguments = list(HLC=quote(HLC(mktdata)), 
                                       n=slow, 
                                       sd=sd))
 
-bee <- add.indicator(
-                     strategy  = bee, 
+bumblebee <- add.indicator(
+                     strategy  = bumblebee, 
                      name      = 'SMA', 
                      arguments = list(x=quote(Cl(mktdata)), 
                                       n=fast),
@@ -58,15 +58,15 @@ bee <- add.indicator(
 
 ############################# SIGNALS #######################################
 
-bee <- add.signal(
-                  strategy  = bee,
+bumblebee <- add.signal(
+                  strategy  = bumblebee,
                   name      = 'sigCrossover',
                   arguments = list(columns=c('fast','dn'), 
                                    relationship='lt'),
                   label     = 'fast.lt.dn')
 
-bee <- add.signal(
-                  strategy  = bee,
+bumblebee <- add.signal(
+                  strategy  = bumblebee,
                   name      = 'sigCrossover',
                   arguments = list(columns=c('fast','up'),
                                    relationship='gt'),
@@ -74,8 +74,8 @@ bee <- add.signal(
 
 ############################# RULES #########################################
 
-bee <- add.rule(
-                strategy  = bee,
+bumblebee <- add.rule(
+                strategy  = bumblebee,
                 name      = 'ruleSignal',
                 arguments = list(sigcol    = 'fast.gt.up',
                                  sigval    = TRUE,
@@ -87,8 +87,8 @@ bee <- add.rule(
                 type      = 'enter',
                 label     = 'EnterLONG')
 
-bee <- add.rule(
-                strategy  = bee,
+bumblebee <- add.rule(
+                strategy  = bumblebee,
                 name      = 'ruleSignal',
                 arguments = list(sigcol    = 'fast.lt.dn',
                                  sigval    = TRUE,
@@ -98,8 +98,8 @@ bee <- add.rule(
                 type      = 'exit',
                 label     = 'ExitLONG')
 
-bee <- add.rule(
-                strategy  = bee,
+bumblebee <- add.rule(
+                strategy  = bumblebee,
                 name      = 'ruleSignal',
                 arguments = list(sigcol     = 'fast.lt.dn',
                                   sigval    = TRUE,
@@ -110,8 +110,8 @@ bee <- add.rule(
                 type      = 'enter',
                 label     = 'EnterSHORT')
 
-bee <- add.rule(
-                strategy  = bee,
+bumblebee <- add.rule(
+                strategy  = bumblebee,
                 name      = 'ruleSignal',
                 arguments = list(sigcol     = 'fast.gt.up',
                                  sigval     = TRUE,
@@ -123,7 +123,7 @@ bee <- add.rule(
 
 ############################# APPLY STRATEGY ################################
 
-applyStrategy(bee, port, prefer='Open', verbose=FALSE)
+applyStrategy(bumblebee, port, prefer='Open', verbose=FALSE)
 
 ############################# UPDATE ########################################
 
