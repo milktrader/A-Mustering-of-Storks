@@ -17,7 +17,7 @@ data(spx)
 port          = 'bug'
 acct          = 'colony'
 initEq        = 100000
-initDate      = '1999-12-31'
+initDate      = '1969-12-31'
 fast          = 10
 slow          = 30
 sd            = 0.5

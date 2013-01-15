@@ -1,0 +1,10 @@
+Package: musteringofstorks 
+Type: Package
+Title: collection of quantstrat strategies
+Version: 0.1  
+Date: 2013-01-15
+Author: milktrader  
+Maintainer: milktrader <milktrader@gmail.com>
+Description: Collection of quantstrat strategies with some wrappers
+Depends: quantstrat
+License: GPL-2 
