@@ -21,10 +21,10 @@ context("Bumblebee order Book is consistent ")
 
 ## quantity
 test_that("The first entry is 100", 
-          { expect_that(as.character(qty[2]) =="100", is_true()) })
+          { expect_that(as.character(qty[3]) =="100", is_true()) })
 
 test_that("The first exit is all", 
-          { expect_that(as.character(qty[3]) =="all", is_true()) })
+          { expect_that(as.character(qty[4]) =="all", is_true()) })
 ## price
 test_that("The first entry price is 88.9", 
           { expect_that(as.character(price[2]) =="88.9", is_true()) })
