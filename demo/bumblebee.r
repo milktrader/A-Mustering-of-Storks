@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript --vanilla
 #
-# Bumblebumblebee trading system
+# Bumblebee trading system
 # copyright (c) 2009-2013, Algorithm Alpha, LLC
 # Licensed GPL-2
 
@@ -29,7 +29,7 @@ stock('spx',currency='USD', multiplier=1)
 initPortf(port, 'spx', initDate=initDate)
 initAcct(acct, port, initEq=initEq, initDate=initDate)
 initOrders(port, initDate=initDate )
-bumblebumblebee = strategy(port)
+bumblebee = strategy(port)
 
 ############################# MAX POSITION LOGIC ############################
 
