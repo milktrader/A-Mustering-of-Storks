@@ -3,7 +3,7 @@ require(testthat)
 
 ######################## DEFINE VARIABLES TO BE TESTED #######
 
-source('bumblebee.r')
+demo('bumblebee', ask=FALSE, echo=FALSE)
 
 qty    = book$bumblebeePort$spx[,'Order.Qty']
 price  = book$bumblebeePort$spx[,'Order.Price']
