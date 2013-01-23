@@ -3,9 +3,17 @@
 # Grasshopper trading system
 # copyright (c) 2009-2013, Algorithm Alpha, LLC
 
-############################### REQUIRE ####################################
+############################# REQUIRE ######################################
 
 require(quantstrat)
+require(PortfolioAnalytics)
+
+
+############################# LOCAL FUNCTION ######################################
+
+rolling_skew <- function(x, n) {
+  rollapply(x, FUN=skewness, width=n)
+}
 
 ############################# GET DATA ######################################
 
@@ -42,83 +50,84 @@ addPosLimit(
 
 grasshopper <- add.indicator( 
                      strategy  = grasshopper, 
-                     name      = 'rollapply.skew', 
+                     name      = 'rolling_skew', 
                      arguments = list(x = quote(Cl(mktdata)), 
-                                      n = slow) 
+                                      n = slow),
+                     label     = 'slow' )
 
-# grasshopper <- add.indicator(
-#                      strategy  = grasshopper, 
-#                      name      = 'SMA', 
-#                      arguments = list(x=quote(Cl(mktdata)), 
-#                                       n=fast),
-#                      label     = 'fast' )
-# 
-# ############################# SIGNALS #######################################
-# 
-# grasshopper <- add.signal(
-#                   strategy  = grasshopper,
-#                   name      = 'sigCrossover',
-#                   arguments = list(columns=c('fast','dn'), 
-#                                    relationship='lt'),
-#                   label     = 'fast.lt.dn')
-# 
-# grasshopper <- add.signal(
-#                   strategy  = grasshopper,
-#                   name      = 'sigCrossover',
-#                   arguments = list(columns=c('fast','up'),
-#                                    relationship='gt'),
-#                   label     = 'fast.gt.up')
-# 
-# ############################# RULES #########################################
-# 
-# grasshopper <- add.rule(
-#                 strategy  = grasshopper,
-#                 name      = 'ruleSignal',
-#                 arguments = list(sigcol    = 'fast.gt.up',
-#                                  sigval    = TRUE,
-#                                  orderqty  = 100,
-#                                  ordertype = 'market',
-#                                  orderside = 'long',
-#                                  osFUN     = 'osMaxPos'),
-# 
-#                 type      = 'enter',
-#                 label     = 'EnterLONG')
-# 
-# grasshopper <- add.rule(
-#                 strategy  = grasshopper,
-#                 name      = 'ruleSignal',
-#                 arguments = list(sigcol    = 'fast.lt.dn',
-#                                  sigval    = TRUE,
-#                                  orderqty  = 'all',
-#                                  ordertype = 'market',
-#                                  orderside = 'long'),
-#                 type      = 'exit',
-#                 label     = 'ExitLONG')
-# 
-# grasshopper <- add.rule(
-#                 strategy  = grasshopper,
-#                 name      = 'ruleSignal',
-#                 arguments = list(sigcol     = 'fast.lt.dn',
-#                                   sigval    = TRUE,
-#                                   orderqty  =  -100,
-#                                   ordertype = 'market',
-#                                   orderside = 'short',
-#                                   osFUN     = 'osMaxPos'),
-#                 type      = 'enter',
-#                 label     = 'EnterSHORT')
-# 
-# grasshopper <- add.rule(
-#                 strategy  = grasshopper,
-#                 name      = 'ruleSignal',
-#                 arguments = list(sigcol     = 'fast.gt.up',
-#                                  sigval     = TRUE,
-#                                  orderqty   = 'all',
-#                                  ordertype  = 'market',
-#                                  orderside  = 'short'),
-#                 type      = 'exit',
-#                 label     = 'ExitSHORT')
-# 
-############################# APPLY STRATEGY ################################
+grasshopper <- add.indicator( 
+                     strategy  = grasshopper, 
+                     name      = 'rolling_skew', 
+                     arguments = list(x = quote(Cl(mktdata)), 
+                                      n = fast),
+                     label     = 'fast' )
+
+############################# SIGNALS #######################################
+
+grasshopper <- add.signal(
+                  strategy  = grasshopper,
+                  name      = 'sigCrossover',
+                  arguments = list(columns=c('fast','slow'), 
+                                   relationship='lt'),
+                  label     = 'fast.lt.slow')
+
+grasshopper <- add.signal(
+                  strategy  = grasshopper,
+                  name      = 'sigCrossover',
+                  arguments = list(columns=c('fast','slow'),
+                                   relationship='gt'),
+                  label     = 'fast.gt.slow')
+
+########################### RULES #########################################
+
+grasshopper <- add.rule(
+                strategy  = grasshopper,
+                name      = 'ruleSignal',
+                arguments = list(sigcol    = 'fast.gt.slow',
+                                 sigval    = TRUE,
+                                 orderqty  = 100,
+                                 ordertype = 'market',
+                                 orderside = 'long',
+                                 osFUN     = 'osMaxPos'),
+
+                type      = 'enter',
+                label     = 'EnterLONG')
+
+grasshopper <- add.rule(
+                strategy  = grasshopper,
+                name      = 'ruleSignal',
+                arguments = list(sigcol    = 'fast.lt.slow',
+                                 sigval    = TRUE,
+                                 orderqty  = 'all',
+                                 ordertype = 'market',
+                                 orderside = 'long'),
+                type      = 'exit',
+                label     = 'ExitLONG')
+
+grasshopper <- add.rule(
+                strategy  = grasshopper,
+                name      = 'ruleSignal',
+                arguments = list(sigcol     = 'fast.lt.slow',
+                                  sigval    = TRUE,
+                                  orderqty  =  -100,
+                                  ordertype = 'market',
+                                  orderside = 'short',
+                                  osFUN     = 'osMaxPos'),
+                type      = 'enter',
+                label     = 'EnterSHORT')
+
+grasshopper <- add.rule(
+                strategy  = grasshopper,
+                name      = 'ruleSignal',
+                arguments = list(sigcol     = 'fast.gt.slow',
+                                 sigval     = TRUE,
+                                 orderqty   = 'all',
+                                 ordertype  = 'market',
+                                 orderside  = 'short'),
+                type      = 'exit',
+                label     = 'ExitSHORT')
+
+########################### APPLY STRATEGY ################################
 
 applyStrategy(grasshopper, port, prefer='Open', verbose=FALSE)
 

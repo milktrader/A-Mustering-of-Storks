@@ -2,11 +2,6 @@
 #
 # Bumblebee trading system
 # copyright (c) 2009-2013, Algorithm Alpha, LLC
-# Licensed GPL-2
-
-############################### REQUIRE ####################################
-
-require(quantstrat)
 
 ############################# GET DATA ######################################
 
