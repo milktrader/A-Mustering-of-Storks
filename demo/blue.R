@@ -1,96 +1,90 @@
 #!/usr/bin/Rscript --vanilla
 #
-# Bumblebee trading system
-# copyright (c) 2009-2013, Algorithm Alpha, LLC
+# blue.R
+#
+# this produces trade statistics that can be compared 
+# with results from other frameworks
+#
+# the data is SPX daily data from 1/1/1970 to 12/31/1972
+#
+# copyright (c) 2009-2012, Algorithm Alpha, LLC
 # Licensed GPL-2
-
-############################### REQUIRE ####################################
+#
+################### LOAD QUANTSTRAT #################
 
 require(quantstrat)
 
-############################# GET DATA ######################################
+###################### LOAD DATA ######################
 
 data(spx)
 
 ############################# DEFINE VARIABLES ##############################
 
-port          = 'bumblebeePort'
-acct          = 'bumblebeeAcct'
-initEq        = 100000
+port          = 'bluePort'
+acct          = 'blueAcct'
+initEq        = 1e6
 initDate      = '1969-12-31'
-fast          = 10
+fast          = 10 
 slow          = 30
-sd            = 0.5
 
 ############################# INITIALIZE ####################################
 
 currency('USD')
-stock('spx',currency='USD', multiplier=1)
+stock('spx' ,currency='USD', multiplier=1)
 initPortf(port, 'spx', initDate=initDate)
 initAcct(acct, port, initEq=initEq, initDate=initDate)
 initOrders(port, initDate=initDate )
-bumblebee = strategy(port)
-
-############################# MAX POSITION LOGIC ############################
-
-addPosLimit(
-            portfolio=port,
-            symbol='spx', 
-            timestamp=initDate,  
-            maxpos=100)
-
+blue = strategy(port)
 
 ############################# INDICATORS ####################################
 
-bumblebee <- add.indicator( 
-                     strategy  = bumblebee, 
-                     name      = 'BBands', 
-                     arguments = list(HLC=quote(HLC(mktdata)), 
-                                      n=slow, 
-                                      sd=sd))
-
-bumblebee <- add.indicator(
-                     strategy  = bumblebee, 
+blue <- add.indicator(
+                     strategy  = blue, 
                      name      = 'SMA', 
                      arguments = list(x=quote(Cl(mktdata)), 
                                       n=fast),
                      label     = 'fast' )
 
+blue <- add.indicator(
+                     strategy  = blue, 
+                     name      = 'SMA', 
+                     arguments = list(x=quote(Cl(mktdata)), 
+                                      n=slow),
+                     label     = 'slow' )
+
 ############################# SIGNALS #######################################
 
-bumblebee <- add.signal(
-                  strategy  = bumblebee,
+blue <- add.signal(
+                  strategy  = blue,
                   name      = 'sigCrossover',
-                  arguments = list(columns=c('fast','dn'), 
+                  arguments = list(columns=c('fast','slow'), 
                                    relationship='lt'),
-                  label     = 'fast.lt.dn')
+                  label     = 'fast.lt.slow')
 
-bumblebee <- add.signal(
-                  strategy  = bumblebee,
+blue <- add.signal(
+                  strategy  = blue,
                   name      = 'sigCrossover',
-                  arguments = list(columns=c('fast','up'),
+                  arguments = list(columns=c('fast','slow'),
                                    relationship='gt'),
-                  label     = 'fast.gt.up')
+                  label     = 'fast.gt.slow')
 
 ############################# RULES #########################################
 
-bumblebee <- add.rule(
-                strategy  = bumblebee,
+blue <- add.rule(
+                strategy  = blue,
                 name      = 'ruleSignal',
-                arguments = list(sigcol    = 'fast.gt.up',
+                arguments = list(sigcol    = 'fast.gt.slow',
                                  sigval    = TRUE,
                                  orderqty  = 100,
                                  ordertype = 'market',
-                                 orderside = 'long',
-                                 osFUN     = 'osMaxPos'),
+                                 orderside = 'long'),
 
                 type      = 'enter',
                 label     = 'EnterLONG')
-
-bumblebee <- add.rule(
-                strategy  = bumblebee,
+blue <- add.rule(
+                strategy  = blue,
                 name      = 'ruleSignal',
-                arguments = list(sigcol    = 'fast.lt.dn',
+                arguments = list(sigcol    = 'fast.lt.slow',
                                  sigval    = TRUE,
                                  orderqty  = 'all',
                                  ordertype = 'market',
@@ -98,22 +92,21 @@ bumblebee <- add.rule(
                 type      = 'exit',
                 label     = 'ExitLONG')
 
-bumblebee <- add.rule(
-                strategy  = bumblebee,
+blue <- add.rule(
+                strategy  = blue,
                 name      = 'ruleSignal',
-                arguments = list(sigcol     = 'fast.lt.dn',
+                arguments = list(sigcol     = 'fast.lt.slow',
                                   sigval    = TRUE,
                                   orderqty  =  -100,
                                   ordertype = 'market',
-                                  orderside = 'short',
-                                  osFUN     = 'osMaxPos'),
+                                  orderside = 'short'),
                 type      = 'enter',
                 label     = 'EnterSHORT')
 
-bumblebee <- add.rule(
-                strategy  = bumblebee,
+blue <- add.rule(
+                strategy  = blue,
                 name      = 'ruleSignal',
-                arguments = list(sigcol     = 'fast.gt.up',
+                arguments = list(sigcol     = 'fast.gt.slow',
                                  sigval     = TRUE,
                                  orderqty   = 'all',
                                  ordertype  = 'market',
@@ -123,15 +116,13 @@ bumblebee <- add.rule(
 
 ############################# APPLY STRATEGY ################################
 
-applyStrategy(bumblebee, port, prefer='Open', verbose=FALSE)
+applyStrategy(blue, port, prefer='Open', verbose=FALSE)
 
 ############################# UPDATE ########################################
 
 updatePortf(port, 'spx', Date=paste('::',as.Date(Sys.time()),sep=''))
-updateAcct(acct)
 
-##################### CONTAINERS CALLED IN TESTING #####################
-rets  = PortfReturns(acct)                                     #########
-book  = getOrderBook(port)                                     #########
-stats = tradeStats(port)                                       #########
-########################################################################
+########################### CONTAINERS CALLED IN TESTING #####################
+
+book = getOrderBook(port)
+
