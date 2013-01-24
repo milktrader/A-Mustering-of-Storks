@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript --vanilla
 #
-# Grasshopper trading system
+# scorpion trading system
 # copyright (c) 2009-2013, Algorithm Alpha, LLC
 
 ############################# REQUIRE ######################################
@@ -14,8 +14,8 @@ data(spx)
 
 ############################# DEFINE VARIABLES ##############################
 
-port          = 'grasshopperPort'
-acct          = 'grasshopperAcct'
+port          = 'scorpionPort'
+acct          = 'scorpionAcct'
 initEq        = 100000
 initDate      = '1949-12-31'
 fast          = 10
@@ -28,68 +28,58 @@ stock('spx',currency='USD', multiplier=1)
 initPortf(port, 'spx', initDate=initDate)
 initAcct(acct, port, initEq=initEq, initDate=initDate)
 initOrders(port, initDate=initDate )
-grasshopper = strategy(port)
-
-############################# MAX POSITION LOGIC ############################
-
-addPosLimit(
-            portfolio=port,
-            symbol='spx', 
-            timestamp=initDate,  
-            maxpos=100)
-
+scorpion = strategy(port)
 
 ############################# INDICATORS ####################################
 
-grasshopper <- add.indicator( 
-                     strategy  = grasshopper, 
-                     name      = 'rolling_skew', 
+scorpion <- add.indicator( 
+                     strategy  = scorpion, 
+                     name      = 'rolling_kurt', 
                      arguments = list(x = quote(Cl(mktdata)), 
                                       n = slow),
                      label     = 'slow' )
 
-grasshopper <- add.indicator( 
-                     strategy  = grasshopper, 
-                     name      = 'rolling_skew', 
+scorpion <- add.indicator( 
+                     strategy  = scorpion, 
+                     name      = 'rolling_kurt', 
                      arguments = list(x = quote(Lo(mktdata)), 
                                       n = fast), 
                      label     = 'fast' )
  
 ############################# SIGNALS #######################################
 
-grasshopper <- add.signal(
-                  strategy  = grasshopper,
+scorpion <- add.signal(
+                  strategy  = scorpion,
                   name      = 'sigCrossover',
-                  arguments = list(columns = c(paste("sk", fast, sep = "."), 
-                                               paste("sk", slow, sep = ".")),
+                  arguments = list(columns = c(paste("kurt", fast, sep = "."), 
+                                               paste("kurt", slow, sep = ".")),
                                    relationship='lt'),
                   label     = 'fast.lt.slow')
 
-grasshopper <- add.signal(
-                  strategy  = grasshopper,
+scorpion <- add.signal(
+                  strategy  = scorpion,
                   name      = 'sigCrossover',
-                  arguments = list(columns = c(paste("sk", fast, sep = "."), 
+                  arguments = list(columns = c(paste("kurt", fast, sep = "."), 
                                                paste("sk", slow, sep = ".")),  
                                    relationship='gt'),
                   label     = 'fast.gt.slow')
 
 ########################### RULES #########################################
 
-grasshopper <- add.rule(
-                strategy  = grasshopper,
+scorpion <- add.rule(
+                strategy  = scorpion,
                 name      = 'ruleSignal',
                 arguments = list(sigcol    = 'fast.gt.slow',
                                  sigval    = TRUE,
                                  orderqty  = 100,
                                  ordertype = 'market',
                                  orderside = 'long'),
-                  #               osFUN     = 'osMaxPos'),
 
                 type      = 'enter',
                 label     = 'EnterLONG')
 
-grasshopper <- add.rule(
-                strategy  = grasshopper,
+scorpion <- add.rule(
+                strategy  = scorpion,
                 name      = 'ruleSignal',
                 arguments = list(sigcol    = 'fast.lt.slow',
                                  sigval    = TRUE,
@@ -99,20 +89,19 @@ grasshopper <- add.rule(
                 type      = 'exit',
                 label     = 'ExitLONG')
 
-grasshopper <- add.rule(
-                strategy  = grasshopper,
+scorpion <- add.rule(
+                strategy  = scorpion,
                 name      = 'ruleSignal',
                 arguments = list(sigcol     = 'fast.lt.slow',
                                   sigval    = TRUE,
                                   orderqty  =  -100,
                                   ordertype = 'market',
                                   orderside = 'short'),
-#                                  osFUN     = 'osMaxPos'),
                 type      = 'enter',
                 label     = 'EnterSHORT')
 
-grasshopper <- add.rule(
-                strategy  = grasshopper,
+scorpion <- add.rule(
+                strategy  = scorpion,
                 name      = 'ruleSignal',
                 arguments = list(sigcol     = 'fast.gt.slow',
                                  sigval     = TRUE,
@@ -124,7 +113,7 @@ grasshopper <- add.rule(
 
 ########################### APPLY STRATEGY ################################
 
-applyStrategy(grasshopper, port, prefer='Open', verbose=FALSE)
+applyStrategy(scorpion, port, prefer='Open', verbose=FALSE)
 
 ############################# UPDATE ########################################
 
@@ -135,5 +124,5 @@ updateAcct(acct)
 rets  = PortfReturns(acct)                                     #########
 book  = getOrderBook(port)                                     #########
 stats = tradeStats(port)                                       #########
-txns  = getTxns(port, 'spx')                                     #########
+txns  = getTxns(port, 'spx')                                   #########
 ########################################################################
