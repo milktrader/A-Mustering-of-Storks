@@ -12,8 +12,12 @@ require(PortfolioAnalytics)
 ############################# LOCAL FUNCTION ######################################
 
 rolling_skew <- function(x, n) {
-  rollapply(x, FUN=skewness, width=n)
+  foo = rollapply(x, FUN=skewness, width=n)
+  bar = cbind(foo, index(x))
+  colnames(bar) = paste("sk", n, sep=".")
+  bar
 }
+
 
 ############################# GET DATA ######################################
 
@@ -24,9 +28,9 @@ data(GSPC)
 port          = 'grasshopperPort'
 acct          = 'grasshopperAcct'
 initEq        = 100000
-initDate      = '1969-12-31'
-fast          = 30
-slow          = 300
+initDate      = '1949-12-31'
+fast          = 10
+slow          = 30
 
 ############################# INITIALIZE ####################################
 
@@ -58,23 +62,23 @@ grasshopper <- add.indicator(
 grasshopper <- add.indicator( 
                      strategy  = grasshopper, 
                      name      = 'rolling_skew', 
-                     arguments = list(x = quote(Cl(mktdata)), 
-                                      n = fast),
+                     arguments = list(x = quote(Lo(mktdata)), 
+                                      n = fast), 
                      label     = 'fast' )
-
+ 
 ############################# SIGNALS #######################################
 
 grasshopper <- add.signal(
                   strategy  = grasshopper,
                   name      = 'sigCrossover',
-                  arguments = list(columns=c('fast','slow'), 
+                  arguments = list(columns=c('sk.10','sk.30'), 
                                    relationship='lt'),
                   label     = 'fast.lt.slow')
 
 grasshopper <- add.signal(
                   strategy  = grasshopper,
                   name      = 'sigCrossover',
-                  arguments = list(columns=c('fast','slow'),
+                  arguments = list(columns=c('sk.10','sk.30'),
                                    relationship='gt'),
                   label     = 'fast.gt.slow')
 
@@ -87,8 +91,8 @@ grasshopper <- add.rule(
                                  sigval    = TRUE,
                                  orderqty  = 100,
                                  ordertype = 'market',
-                                 orderside = 'long',
-                                 osFUN     = 'osMaxPos'),
+                                 orderside = 'long'),
+                  #               osFUN     = 'osMaxPos'),
 
                 type      = 'enter',
                 label     = 'EnterLONG')
@@ -111,8 +115,8 @@ grasshopper <- add.rule(
                                   sigval    = TRUE,
                                   orderqty  =  -100,
                                   ordertype = 'market',
-                                  orderside = 'short',
-                                  osFUN     = 'osMaxPos'),
+                                  orderside = 'short'),
+#                                  osFUN     = 'osMaxPos'),
                 type      = 'enter',
                 label     = 'EnterSHORT')
 
@@ -140,5 +144,5 @@ updateAcct(acct)
 rets  = PortfReturns(acct)                                     #########
 book  = getOrderBook(port)                                     #########
 stats = tradeStats(port)                                       #########
-txns  = getTxns(port, sym)                                     #########
+txns  = getTxns(port, 'GSPC')                                     #########
 ########################################################################
