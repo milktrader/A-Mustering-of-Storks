@@ -73,11 +73,10 @@ ladybug <- add.rule(
                                  sigval    = TRUE,
                                  orderqty  = 100,
                                  ordertype = 'market',
-                                 orderside = 'long'),
-                  #               osFUN     = 'osMaxPos'),
+                                 orderside = 'short'),
 
                 type      = 'enter',
-                label     = 'EnterLONG')
+                label     = 'EnterSHORT')
 
 ladybug <- add.rule(
                 strategy  = ladybug,
@@ -86,9 +85,9 @@ ladybug <- add.rule(
                                  sigval    = TRUE,
                                  orderqty  = 'all',
                                  ordertype = 'market',
-                                 orderside = 'long'),
+                                 orderside = 'short'),
                 type      = 'exit',
-                label     = 'ExitLONG')
+                label     = 'ExitSHORT')
 
 ladybug <- add.rule(
                 strategy  = ladybug,
@@ -97,10 +96,9 @@ ladybug <- add.rule(
                                   sigval    = TRUE,
                                   orderqty  =  -100,
                                   ordertype = 'market',
-                                  orderside = 'short'),
-#                                  osFUN     = 'osMaxPos'),
+                                  orderside = 'long'),
                 type      = 'enter',
-                label     = 'EnterSHORT')
+                label     = 'EnterLONG')
 
 ladybug <- add.rule(
                 strategy  = ladybug,
@@ -109,9 +107,9 @@ ladybug <- add.rule(
                                  sigval     = TRUE,
                                  orderqty   = 'all',
                                  ordertype  = 'market',
-                                 orderside  = 'short'),
+                                 orderside  = 'long'),
                 type      = 'exit',
-                label     = 'ExitSHORT')
+                label     = 'ExitLONG')
 
 ########################### APPLY STRATEGY ################################
 
