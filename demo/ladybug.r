@@ -30,23 +30,23 @@ initAcct(acct, port, initEq=initEq, initDate=initDate)
 initOrders(port, initDate=initDate )
 ladybug = strategy(port)
 
-############################## INDICATORS ####################################
-#
-#ladybug <- add.indicator( 
-#                     strategy  = ladybug, 
-#                     name      = 'rolling_skew', 
-#                     arguments = list(x = quote(Cl(mktdata)), 
-#                                      n = slow),
-#                     label     = 'slow' )
-#
-#ladybug <- add.indicator( 
-#                     strategy  = ladybug, 
-#                     name      = 'rolling_skew', 
-#                     arguments = list(x = quote(Lo(mktdata)), 
-#                                      n = fast), 
-#                     label     = 'fast' )
-# 
-############################## SIGNALS #######################################
+############################# INDICATORS ####################################
+
+ladybug <- add.indicator( 
+                     strategy  = ladybug, 
+                     name      = 'rolling_skew', 
+                     arguments = list(x = quote(Cl(mktdata)), 
+                                      n = slow),
+                     label     = 'slow' )
+
+ladybug <- add.indicator( 
+                     strategy  = ladybug, 
+                     name      = 'rolling_skew', 
+                     arguments = list(x = quote(Lo(mktdata)), 
+                                      n = fast), 
+                     label     = 'fast' )
+ 
+############################# SIGNALS #######################################
 #
 #ladybug <- add.signal(
 #                  strategy  = ladybug,
