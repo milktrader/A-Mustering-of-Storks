@@ -34,85 +34,85 @@ ladybug = strategy(port)
 
 ladybug <- add.indicator( 
                      strategy  = ladybug, 
-                     name      = 'rolling_skew', 
+                     name      = 'rolling_var', 
                      arguments = list(x = quote(Cl(mktdata)), 
                                       n = slow),
                      label     = 'slow' )
 
 ladybug <- add.indicator( 
                      strategy  = ladybug, 
-                     name      = 'rolling_skew', 
+                     name      = 'rolling_var', 
                      arguments = list(x = quote(Lo(mktdata)), 
                                       n = fast), 
                      label     = 'fast' )
  
-############################# SIGNALS #######################################
-#
-#ladybug <- add.signal(
-#                  strategy  = ladybug,
-#                  name      = 'sigCrossover',
-#                  arguments = list(columns = c(paste("sk", fast, sep = "."), 
-#                                               paste("sk", slow, sep = ".")),
-#                                   relationship='lt'),
-#                  label     = 'fast.lt.slow')
-#
-#ladybug <- add.signal(
-#                  strategy  = ladybug,
-#                  name      = 'sigCrossover',
-#                  arguments = list(columns = c(paste("sk", fast, sep = "."), 
-#                                               paste("sk", slow, sep = ".")),  
-#                                   relationship='gt'),
-#                  label     = 'fast.gt.slow')
-#
-############################ RULES #########################################
-#
-#ladybug <- add.rule(
-#                strategy  = ladybug,
-#                name      = 'ruleSignal',
-#                arguments = list(sigcol    = 'fast.gt.slow',
-#                                 sigval    = TRUE,
-#                                 orderqty  = 100,
-#                                 ordertype = 'market',
-#                                 orderside = 'long'),
-#                  #               osFUN     = 'osMaxPos'),
-#
-#                type      = 'enter',
-#                label     = 'EnterLONG')
-#
-#ladybug <- add.rule(
-#                strategy  = ladybug,
-#                name      = 'ruleSignal',
-#                arguments = list(sigcol    = 'fast.lt.slow',
-#                                 sigval    = TRUE,
-#                                 orderqty  = 'all',
-#                                 ordertype = 'market',
-#                                 orderside = 'long'),
-#                type      = 'exit',
-#                label     = 'ExitLONG')
-#
-#ladybug <- add.rule(
-#                strategy  = ladybug,
-#                name      = 'ruleSignal',
-#                arguments = list(sigcol     = 'fast.lt.slow',
-#                                  sigval    = TRUE,
-#                                  orderqty  =  -100,
-#                                  ordertype = 'market',
-#                                  orderside = 'short'),
-##                                  osFUN     = 'osMaxPos'),
-#                type      = 'enter',
-#                label     = 'EnterSHORT')
-#
-#ladybug <- add.rule(
-#                strategy  = ladybug,
-#                name      = 'ruleSignal',
-#                arguments = list(sigcol     = 'fast.gt.slow',
-#                                 sigval     = TRUE,
-#                                 orderqty   = 'all',
-#                                 ordertype  = 'market',
-#                                 orderside  = 'short'),
-#                type      = 'exit',
-#                label     = 'ExitSHORT')
-#
+############################ SIGNALS #######################################
+
+ladybug <- add.signal(
+                  strategy  = ladybug,
+                  name      = 'sigCrossover',
+                  arguments = list(columns = c(paste("var", fast, sep = "."), 
+                                               paste("var", slow, sep = ".")),
+                                   relationship='lt'),
+                  label     = 'fast.lt.slow')
+
+ladybug <- add.signal(
+                  strategy  = ladybug,
+                  name      = 'sigCrossover',
+                  arguments = list(columns = c(paste("var", fast, sep = "."), 
+                                               paste("var", slow, sep = ".")),  
+                                   relationship='gt'),
+                  label     = 'fast.gt.slow')
+
+########################### RULES #########################################
+
+ladybug <- add.rule(
+                strategy  = ladybug,
+                name      = 'ruleSignal',
+                arguments = list(sigcol    = 'fast.gt.slow',
+                                 sigval    = TRUE,
+                                 orderqty  = 100,
+                                 ordertype = 'market',
+                                 orderside = 'long'),
+                  #               osFUN     = 'osMaxPos'),
+
+                type      = 'enter',
+                label     = 'EnterLONG')
+
+ladybug <- add.rule(
+                strategy  = ladybug,
+                name      = 'ruleSignal',
+                arguments = list(sigcol    = 'fast.lt.slow',
+                                 sigval    = TRUE,
+                                 orderqty  = 'all',
+                                 ordertype = 'market',
+                                 orderside = 'long'),
+                type      = 'exit',
+                label     = 'ExitLONG')
+
+ladybug <- add.rule(
+                strategy  = ladybug,
+                name      = 'ruleSignal',
+                arguments = list(sigcol     = 'fast.lt.slow',
+                                  sigval    = TRUE,
+                                  orderqty  =  -100,
+                                  ordertype = 'market',
+                                  orderside = 'short'),
+#                                  osFUN     = 'osMaxPos'),
+                type      = 'enter',
+                label     = 'EnterSHORT')
+
+ladybug <- add.rule(
+                strategy  = ladybug,
+                name      = 'ruleSignal',
+                arguments = list(sigcol     = 'fast.gt.slow',
+                                 sigval     = TRUE,
+                                 orderqty   = 'all',
+                                 ordertype  = 'market',
+                                 orderside  = 'short'),
+                type      = 'exit',
+                label     = 'ExitSHORT')
+
 ########################### APPLY STRATEGY ################################
 
 applyStrategy(ladybug, port, prefer='Open', verbose=FALSE)
