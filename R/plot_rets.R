@@ -1,4 +1,4 @@
-pretty_returns <- function(returns,  xlab="", up.col='springgreen3', dn.col='skyblue3', main='System Returns'){
+plot_rets <- function(returns,  xlab="SPX from 1970-1971 (507 days)", up.col='springgreen3', dn.col='skyblue3', main_title='Bumblebee'){
 
   RET   = na.omit(returns)
   ups   = nrow(RET[RET > 0])
@@ -22,7 +22,7 @@ pretty_returns <- function(returns,  xlab="", up.col='springgreen3', dn.col='sky
 
   #png("1.png")
   #pdf("1.pdf")
-  plot(dens, xlab=xlab, ylab="", main=main, yaxt="n")
+  plot(dens, xlab=xlab, ylab="", main=paste0(main_title, " Returns"), yaxt="n", cex.lab=.75)
   with(dens, polygon(x=c(x[c(x1,x1:x2,x2)]), y= c(0, y[x1:x2], 0), col=up.col))
   with(dens, polygon(x=c(x[c(x3,x3:x4,x4)]), y= c(0, y[x3:x4], 0), col=dn.col))
   legend("topleft", inset=.01, legend=c(ups,downs), fill=c(up.col, dn.col), cex=.8, bty='n')
