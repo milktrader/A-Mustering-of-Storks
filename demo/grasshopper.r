@@ -9,19 +9,19 @@ require(quantstrat)
 require(PortfolioAnalytics)
 
 
-############################# LOCAL FUNCTION ######################################
-
-rolling_skew <- function(x, n) {
-  foo = rollapply(x, FUN=skewness, width=n)
-  bar = cbind(foo, index(x))
-  colnames(bar) = paste("sk", n, sep=".")
-  bar
-}
-
-
+############################## LOCAL FUNCTION ######################################
+#
+#rolling_skew <- function(x, n) {
+#  foo = rollapply(x, FUN=skewness, width=n)
+#  bar = cbind(foo, index(x))
+#  colnames(bar) = paste("sk", n, sep=".")
+#  bar
+#}
+#
+#
 ############################# GET DATA ######################################
 
-data(GSPC)
+data(spx)
 
 ############################# DEFINE VARIABLES ##############################
 
@@ -35,8 +35,8 @@ slow          = 30
 ############################# INITIALIZE ####################################
 
 currency('USD')
-stock('GSPC',currency='USD', multiplier=1)
-initPortf(port, 'GSPC', initDate=initDate)
+stock('spx',currency='USD', multiplier=1)
+initPortf(port, 'spx', initDate=initDate)
 initAcct(acct, port, initEq=initEq, initDate=initDate)
 initOrders(port, initDate=initDate )
 grasshopper = strategy(port)
@@ -45,7 +45,7 @@ grasshopper = strategy(port)
 
 addPosLimit(
             portfolio=port,
-            symbol='GSPC', 
+            symbol='spx', 
             timestamp=initDate,  
             maxpos=100)
 
@@ -71,14 +71,16 @@ grasshopper <- add.indicator(
 grasshopper <- add.signal(
                   strategy  = grasshopper,
                   name      = 'sigCrossover',
-                  arguments = list(columns=c('sk.10','sk.30'), 
+                  arguments = list(columns = c(paste("sk", fast, sep = "."), 
+                                               paste("sk", slow, sep = ".")),
                                    relationship='lt'),
                   label     = 'fast.lt.slow')
 
 grasshopper <- add.signal(
                   strategy  = grasshopper,
                   name      = 'sigCrossover',
-                  arguments = list(columns=c('sk.10','sk.30'),
+                  arguments = list(columns = c(paste("sk", fast, sep = "."), 
+                                               paste("sk", slow, sep = ".")),  
                                    relationship='gt'),
                   label     = 'fast.gt.slow')
 
@@ -137,12 +139,12 @@ applyStrategy(grasshopper, port, prefer='Open', verbose=FALSE)
 
 ############################# UPDATE ########################################
 
-updatePortf(port, 'GSPC', Date=paste('::',as.Date(Sys.time()),sep=''))
+updatePortf(port, 'spx', Date=paste('::',as.Date(Sys.time()),sep=''))
 updateAcct(acct)
 
 ##################### CONTAINERS CALLED IN TESTING #####################
 rets  = PortfReturns(acct)                                     #########
 book  = getOrderBook(port)                                     #########
 stats = tradeStats(port)                                       #########
-txns  = getTxns(port, 'GSPC')                                     #########
+txns  = getTxns(port, 'spx')                                     #########
 ########################################################################
