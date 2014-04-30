@@ -37,61 +37,30 @@ addPosLimit(
 
 ############################# INDICATORS ####################################
 
-bumblebee <- add.indicator( 
-                     strategy  = bumblebee, 
-                     name      = 'BBands', 
-                     arguments = list(HLC=quote(HLC(mktdata)), 
-                                      n=slow, 
-                                      sd=sd))
+add.indicator(bumblebee, name='BBands', arguments = list(HLC=quote(HLC(mktdata)), n=slow, sd=sd))
 
-bumblebee <- add.indicator(
-                     strategy  = bumblebee, 
-                     name      = 'SMA', 
-                     arguments = list(x=quote(Cl(mktdata)), 
-                                      n=fast),
-                     label     = 'fast' )
+add.indicator(bumblebee, name='SMA', label='fast', arguments = list(x=quote(Cl(mktdata)), n=fast))
 
 ############################# SIGNALS #######################################
 
-bumblebee <- add.signal(
-                  strategy  = bumblebee,
-                  name      = 'sigCrossover',
-                  arguments = list(columns=c('fast','dn'), 
-                                   relationship='lt'),
-                  label     = 'fast.lt.dn')
+add.signal(bumblebee, name='sigCrossover', label= 'fast.lt.dn', arguments = list(columns=c('fast','dn'), relationship='lt'))
 
-bumblebee <- add.signal(
-                  strategy  = bumblebee,
-                  name      = 'sigCrossover',
-                  arguments = list(columns=c('fast','up'),
-                                   relationship='gt'),
-                  label     = 'fast.gt.up')
+add.signal(bumblebee, name='sigCrossover', label='fast.gt.up', arguments = list(columns=c('fast','up'), relationship='gt'))
 
 ############################# RULES #########################################
 
-bumblebee <- add.rule(
-                strategy  = bumblebee,
-                name      = 'ruleSignal',
-                arguments = list(sigcol    = 'fast.gt.up',
-                                 sigval    = TRUE,
-                                 orderqty  = 100,
-                                 ordertype = 'market',
-                                 orderside = 'long',
-                                 osFUN     = 'osMaxPos'),
+add.rule(bumblebee, 
+         name='ruleSignal', 
+         type='enter', 
+         label='EnterLONG',
+         arguments=list(sigcol= 'fast.gt.up', sigval= TRUE, orderqty=100, ordertype = 'market', orderside='long', osFUN= 'osMaxPos')
 
-                type      = 'enter',
-                label     = 'EnterLONG')
 
-bumblebee <- add.rule(
-                strategy  = bumblebee,
-                name      = 'ruleSignal',
-                arguments = list(sigcol    = 'fast.lt.dn',
-                                 sigval    = TRUE,
-                                 orderqty  = 'all',
-                                 ordertype = 'market',
-                                 orderside = 'long'),
-                type      = 'exit',
-                label     = 'ExitLONG')
+add.rule(bumblebee, 
+         name='ruleSignal', 
+         type='exit', 
+         label='ExitLONG', 
+         arguments=list(sigcol='fast.lt.dn', sigval=TRUE, orderqty ='all', ordertype='market', orderside='long'))
 
 bumblebee <- add.rule(
                 strategy  = bumblebee,
