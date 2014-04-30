@@ -7,4 +7,4 @@ Author: milktrader
 Maintainer: milktrader <milktrader@gmail.com>
 Description: Collection of quantstrat strategies with some wrappers
 Depends: quantstrat, PortfolioAnalytics, testthat
-License: copyright Algorithm Alpha, LLC
+License: GPL-3
