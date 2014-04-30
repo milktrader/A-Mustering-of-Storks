@@ -2,9 +2,6 @@
 #
 # blue.R
 #
-# this produces trade statistics that can be compared 
-# with results from other frameworks
-#
 # the data is SPX daily data from 1/1/1970 to 12/31/1972
 #
 # copyright (c) 2009-2012, Algorithm Alpha, LLC
@@ -122,7 +119,9 @@ applyStrategy(blue, port, prefer='Open', verbose=FALSE)
 
 updatePortf(port, 'spx', Date=paste('::',as.Date(Sys.time()),sep=''))
 
-########################### CONTAINERS CALLED IN TESTING #####################
-
-book = getOrderBook(port)
-
+##################### CONTAINERS CALLED IN TESTING #####################
+rets  = PortfReturns(acct)                                     #########
+book  = getOrderBook(port)                                     #########
+stats = tradeStats(port)                                       #########
+txns  = getTxns(port, 'spx')                                   #########
+########################################################################

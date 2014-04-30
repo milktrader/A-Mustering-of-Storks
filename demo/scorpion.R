@@ -60,7 +60,7 @@ scorpion <- add.signal(
                   strategy  = scorpion,
                   name      = 'sigCrossover',
                   arguments = list(columns = c(paste("kurt", fast, sep = "."), 
-                                               paste("sk", slow, sep = ".")),  
+                                               paste("kurt", slow, sep = ".")),  
                                    relationship='gt'),
                   label     = 'fast.gt.slow')
 
